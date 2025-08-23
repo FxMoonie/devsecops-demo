@@ -5,6 +5,7 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
   build-test:
@@ -21,8 +22,11 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
-        pip install pytest
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install pytest
 
     - name: Run tests
-      run: pytest -v
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: python -m pytest -v
