@@ -21,7 +21,11 @@ installs dependencies
 
 runs automated tests
 
-(later) integrates security tools (Semgrep, Trivy, OWASP ZAP, Dependency-Check)
+integrates security tools:
+- Semgrep (SAST)
+- pip-audit & OWASP Dependency-Check (SCA)
+- Trivy (container & filesystem scan)
+- OWASP ZAP Baseline (DAST)
 
 ▶️ Getting Started
 Run locally
