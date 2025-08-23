@@ -69,11 +69,20 @@ jobs:
         echo "----- reports dir -----"
         ls -la reports || true
 
+    - name: Locate DC report files
+      run: |
+        echo "Searching for dependency-check report files..."
+        find . -maxdepth 3 -type f -name "dependency-check-report.*" -print || true
+
     - name: Upload Dependency-Check report
       uses: actions/upload-artifact@v4
       with:
         name: dependency-check-report
-        path: reports/**
+        path: |
+          **/dependency-check-report.html
+          **/dependency-check-report.sarif
+          **/dependency-check-report.xml
+          **/dependency-check-report.json
         if-no-files-found: warn
 
     # --- Build Docker image (for image scanning) ---
