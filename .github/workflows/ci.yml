@@ -7,6 +7,9 @@ on:
     branches: [ "master" ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-test-and-scan:
     runs-on: ubuntu-latest
@@ -58,9 +61,7 @@ jobs:
         project: devsecops-demo
         path: .
         format: 'HTML,SARIF'
-        # Write directly with the base file path -> generates .html and .sarif
         out: 'reports/dependency-check-report'
-        # Ensure scan path and experimental analysis
         args: '--enableExperimental --failOnCVSS 7.0 --scan .'
       continue-on-error: true
 
@@ -93,7 +94,6 @@ jobs:
       run: docker build -t devsecops-demo:ci .
 
     # --- Container scan: Trivy (image) ---
-    # exit-code '0' = only report; change to '1' if you want to fail on findings
     - name: Trivy image scan
       uses: aquasecurity/trivy-action@0.24.0
       with:
@@ -110,7 +110,6 @@ jobs:
           -p 5000:5000 \
           -e FLASK_HOST=0.0.0.0 -e PORT=5000 \
           devsecops-demo:ci
-        # wait until the app responds
         for i in {1..30}; do
           if curl -fsS http://localhost:5000/ >/dev/null; then
             echo "App is up"; exit 0
@@ -139,16 +138,6 @@ jobs:
         echo "ZAP JSON report should be: report_json.json"
         ls -la .
 
-    - name: Upload ZAP report
-      uses: actions/upload-artifact@v4
-      with:
-        name: zap-scan
-        path: |
-          report_html.html
-          report_md.md
-          report_json.json
-        if-no-files-found: warn
-
     - name: Stop app container
       if: always()
       run: docker rm -f demoapp || true
@@ -161,4 +150,4 @@ jobs:
         ignore-unfixed: true
         format: 'table'
         severity: 'HIGH,CRITICAL'
-        exit-code: '1'   # fail if High/Critical found
+        exit-code: '1'
