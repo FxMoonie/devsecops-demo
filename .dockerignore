@@ -1,0 +1,11 @@
+.git
+__pycache__/
+*.pyc
+reports/
+*.sarif
+*.html
+*.md
+*.json
+.env
+.gitignore
+.github/
