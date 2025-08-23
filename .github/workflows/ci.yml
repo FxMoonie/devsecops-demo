@@ -86,7 +86,7 @@ jobs:
           **/dependency-check-report.sarif
           **/dependency-check-report.xml
           **/dependency-check-report.json
-        if-no-files-found: ignore
+        if-no-files-found: warn
 
     # --- Build Docker image (for image scanning) ---
     - name: Build Docker image
@@ -128,14 +128,14 @@ jobs:
         cmd_options: '-a -m 3'
         fail_action: false
         allow_issue_writing: false
-        artifact_name: 'zap-scan'
+        artifact_name: 'zapscan'   # ← vain kirjaimia
       continue-on-error: true
 
     - name: Upload ZAP report
       uses: actions/upload-artifact@v4
       with:
         name: zap-baseline-report
-        path: zap-baseline-report.html
+        path: '**/zap-baseline-report.html'  # ← globaava haku
         if-no-files-found: warn
 
     - name: Stop app container
