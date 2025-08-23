@@ -1,5 +1,5 @@
 DevSecOps Demo
-
+[![CI](https://github.com/FxMoonie/devsecops-demo/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/FxMoonie/devsecops-demo/actions/workflows/ci.yml?query=branch%3Amaster)
 🚀 Private demo repository for practicing DevSecOps pipelines with a simple Python Flask app and GitHub Actions.
 
 📌 Overview
