@@ -129,7 +129,7 @@ jobs:
         cmd_options: '-a -m 3'
         fail_action: false
         allow_issue_writing: false
-        artifact_name: ''   # ⛔️ tyhjä -> estää sisäisen artifact-uploadin (oletus 'zap_scan')
+        artifact_name: zapscan
       continue-on-error: true
 
     - name: Näytä ZAP-raporttien polut (debug)
