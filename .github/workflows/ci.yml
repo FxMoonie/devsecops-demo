@@ -129,7 +129,7 @@ jobs:
         cmd_options: '-a -m 3'
         fail_action: false
         allow_issue_writing: false
-        artifact_name: zapscan
+        artifact_name: ZAPREPORTS
       continue-on-error: true
 
     - name: Näytä ZAP-raporttien polut (debug)
