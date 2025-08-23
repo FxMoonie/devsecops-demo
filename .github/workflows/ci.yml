@@ -55,7 +55,7 @@ jobs:
         project: devsecops-demo
         path: .
         format: 'HTML,SARIF'
-        out: 'dependency-check-report'
+        out: 'reports'
         args: '--failOnCVSS 7.0'
       continue-on-error: true
 
@@ -63,7 +63,8 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: dependency-check-report
-        path: dependency-check-report
+        path: ${{ github.workspace }}/reports
+        if-no-files-found: warn
 
     # --- Build Docker image (for image scanning) ---
     - name: Build Docker image
