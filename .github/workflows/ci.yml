@@ -44,10 +44,26 @@ jobs:
     # --- Dependency scan: pip-audit ---
     - name: Install pip-audit
       run: python -m pip install pip-audit
+
     - name: Run pip-audit (fail on vulns)
       run: pip-audit --strict
 
-    # --- Container/FS scan: Trivy (filesystem) ---
+    # --- Build Docker image (for image scanning) ---
+    - name: Build Docker image
+      run: docker build -t devsecops-demo:ci .
+
+    # --- Container scan: Trivy (image) ---
+    # exit-code '0' = vain raportti; vaihda '1' jos haluat failata löydöksistä
+    - name: Trivy image scan
+      uses: aquasecurity/trivy-action@0.24.0
+      with:
+        image-ref: 'devsecops-demo:ci'
+        format: 'table'
+        ignore-unfixed: true
+        severity: 'HIGH,CRITICAL'
+        exit-code: '0'
+
+    # --- Filesystem scan: Trivy (repo) ---
     - name: Trivy filesystem scan
       uses: aquasecurity/trivy-action@0.24.0
       with:
