@@ -122,20 +122,32 @@ jobs:
         exit 1
 
     - name: OWASP ZAP Baseline scan
-      uses: zaproxy/action-baseline@v0.10.0
+      id: zap
+      uses: zaproxy/action-baseline@v0.13.0
       with:
         target: 'http://localhost:5000'
         cmd_options: '-a -m 3'
         fail_action: false
         allow_issue_writing: false
-        artifact_name: 'zapscan'   # ← vain kirjaimia
+        # artifact_name poistettu -> ei sisäistä uploadia
       continue-on-error: true
+
+    - name: Näytä ZAP-raporttien polut (debug)
+      run: |
+        echo "ZAP HTML report: ${{ steps.zap.outputs.report_html }}"
+        echo "ZAP MD report:   ${{ steps.zap.outputs.report_md }}"
+        echo "ZAP JSON report: ${{ steps.zap.outputs.report_json }}"
+        echo "Listataan hakemisto:"
+        ls -la "$(dirname "${{ steps.zap.outputs.report_html }}")" || true
 
     - name: Upload ZAP report
       uses: actions/upload-artifact@v4
       with:
         name: zap-baseline-report
-        path: '**/zap-baseline-report.html'  # ← globaava haku
+        path: |
+          ${{ steps.zap.outputs.report_html }}
+          ${{ steps.zap.outputs.report_md }}
+          ${{ steps.zap.outputs.report_json }}
         if-no-files-found: warn
 
     - name: Stop app container
