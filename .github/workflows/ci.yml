@@ -143,7 +143,7 @@ jobs:
     - name: Upload ZAP report
       uses: actions/upload-artifact@v4
       with:
-        name: zap-scan
+        name: zapscan
         path: |
           ${{ steps.zap.outputs.report_html }}
           ${{ steps.zap.outputs.report_md }}
