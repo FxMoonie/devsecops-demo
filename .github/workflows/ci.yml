@@ -59,7 +59,7 @@ jobs:
         path: .
         format: 'HTML,SARIF'
         out: 'reports'
-        args: '--failOnCVSS 7.0'
+        args: '--enableExperimental --failOnCVSS 7.0'
       continue-on-error: true
 
     - name: Show generated reports
@@ -79,6 +79,7 @@ jobs:
       with:
         name: dependency-check-report
         path: |
+          reports/**
           **/dependency-check-report.html
           **/dependency-check-report.sarif
           **/dependency-check-report.xml
