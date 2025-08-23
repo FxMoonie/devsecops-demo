@@ -86,7 +86,7 @@ jobs:
           **/dependency-check-report.sarif
           **/dependency-check-report.xml
           **/dependency-check-report.json
-        if-no-files-found: warn
+        if-no-files-found: ignore
 
     # --- Build Docker image (for image scanning) ---
     - name: Build Docker image
@@ -102,6 +102,44 @@ jobs:
         ignore-unfixed: true
         severity: 'HIGH,CRITICAL'
         exit-code: '0'
+
+    # --- DAST: OWASP ZAP Baseline ---
+    - name: Run app container (for ZAP)
+      run: |
+        docker run -d --name demoapp \
+          -p 5000:5000 \
+          -e FLASK_HOST=0.0.0.0 -e PORT=5000 \
+          devsecops-demo:ci
+        # odota että appi vastaa
+        for i in {1..30}; do
+          if curl -fsS http://localhost:5000/ >/dev/null; then
+            echo "App is up"; exit 0
+          fi
+          sleep 1
+        done
+        echo "App did not become ready in time"
+        docker logs demoapp || true
+        exit 1
+
+    - name: OWASP ZAP Baseline scan
+      uses: zaproxy/action-baseline@v0.10.0
+      with:
+        target: 'http://localhost:5000'
+        cmd_options: '-a -m 3'   # -a: alpha rules, -m: max minutes
+        fail_action: false       # ei kaada CI:tä löydöksistä
+        allow_issue_writing: false
+      continue-on-error: true
+
+    - name: Upload ZAP report
+      uses: actions/upload-artifact@v4
+      with:
+        name: zap-baseline-report
+        path: zap-baseline-report.html
+        if-no-files-found: warn
+
+    - name: Stop app container
+      if: always()
+      run: docker rm -f demoapp || true
 
     # --- Filesystem scan: Trivy (repo) ---
     - name: Trivy filesystem scan
