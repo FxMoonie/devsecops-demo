@@ -86,7 +86,7 @@ jobs:
           **/dependency-check-report.sarif
           **/dependency-check-report.xml
           **/dependency-check-report.json
-        if-no-files-found: warn
+        if-no-files-found: ignore
 
     # --- Build Docker image (for image scanning) ---
     - name: Build Docker image
@@ -134,20 +134,19 @@ jobs:
 
     - name: Näytä ZAP-raporttien polut (debug)
       run: |
-        echo "ZAP HTML report: ${{ steps.zap.outputs.report_html }}"
-        echo "ZAP MD report:   ${{ steps.zap.outputs.report_md }}"
-        echo "ZAP JSON report: ${{ steps.zap.outputs.report_json }}"
-        echo "Listataan hakemisto:"
-        ls -la "$(dirname "${{ steps.zap.outputs.report_html }}")" || true
+        echo "ZAP HTML report should be: report_html.html"
+        echo "ZAP MD report should be:   report_md.md"
+        echo "ZAP JSON report should be: report_json.json"
+        ls -la .
 
     - name: Upload ZAP report
       uses: actions/upload-artifact@v4
       with:
         name: zap-scan
         path: |
-          ${{ steps.zap.outputs.report_html }}
-          ${{ steps.zap.outputs.report_md }}
-          ${{ steps.zap.outputs.report_json }}
+          report_html.html
+          report_md.md
+          report_json.json
         if-no-files-found: warn
 
     - name: Stop app container
