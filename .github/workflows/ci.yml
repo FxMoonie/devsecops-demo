@@ -125,9 +125,10 @@ jobs:
       uses: zaproxy/action-baseline@v0.10.0
       with:
         target: 'http://localhost:5000'
-        cmd_options: '-a -m 3'   # -a: alpha rules, -m: max minutes
-        fail_action: false       # ei kaada CI:tä löydöksistä
+        cmd_options: '-a -m 3'
+        fail_action: false
         allow_issue_writing: false
+        artifact_name: 'zap-scan'
       continue-on-error: true
 
     - name: Upload ZAP report
