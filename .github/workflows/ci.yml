@@ -48,6 +48,23 @@ jobs:
     - name: Run pip-audit (fail on vulns)
       run: pip-audit --strict
 
+    # --- Dependency scan: OWASP Dependency-Check ---
+    - name: OWASP Dependency-Check
+      uses: jeremylong/gh-action-dependency-check@v3
+      with:
+        project: devsecops-demo
+        path: .
+        format: 'HTML,SARIF'
+        out: 'dependency-check-report'
+        args: '--failOnCVSS 7.0'
+      continue-on-error: true
+
+    - name: Upload Dependency-Check report
+      uses: actions/upload-artifact@v4
+      with:
+        name: dependency-check-report
+        path: dependency-check-report
+
     # --- Build Docker image (for image scanning) ---
     - name: Build Docker image
       run: docker build -t devsecops-demo:ci .
