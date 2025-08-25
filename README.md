@@ -19,6 +19,7 @@ It is intended for learning and demonstration purposes only.
   - integrates security tools:
     - Semgrep (SAST)
     - pip-audit & OWASP Dependency-Check (SCA)
+    - Gitleaks (secret scanning)
     - Trivy (container & filesystem scan)
     - OWASP ZAP Baseline (DAST)
 
