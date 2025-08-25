@@ -89,11 +89,15 @@ jobs:
           **/dependency-check-report.json
         if-no-files-found: ignore
 
-    # --- Secret scanning: Gitleaks ---
-    - name: Gitleaks secret scan
-      uses: gitleaks/gitleaks-action@v2
-      with:
-        args: detect --source . --no-git --redact --exit-code 1
+    # --- Secret scanning: Gitleaks (CLI) ---
+    - name: Install Gitleaks
+      run: |
+        curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o gitleaks
+        chmod +x gitleaks
+        sudo mv gitleaks /usr/local/bin/
+
+    - name: Run Gitleaks secret scan
+      run: gitleaks detect --source . --no-git --redact --exit-code 1
 
     # --- Build Docker image (for image scanning) ---
     - name: Build Docker image
