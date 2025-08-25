@@ -89,6 +89,12 @@ jobs:
           **/dependency-check-report.json
         if-no-files-found: ignore
 
+    # --- Secret scanning: Gitleaks ---
+    - name: Gitleaks secret scan
+      uses: gitleaks/gitleaks-action@v2
+      with:
+        args: detect --source . --no-git --redact --exit-code 1
+
     # --- Build Docker image (for image scanning) ---
     - name: Build Docker image
       run: docker build -t devsecops-demo:ci .
